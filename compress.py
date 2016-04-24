@@ -38,12 +38,27 @@ def main():
 
 	'''Differential encoding'''
 	flatLL = LL.flatten()
-	print flatLL[0:5]
 	flatLL = np.insert(flatLL, 0, 0.0)
 	LLdiff = np.diff(flatLL)
+	LLlist = list(LLdiff)
+
+	'''Quantization'''
+	LHq = LH / q
+	HHq = HH / q
+	HLq = HL / q
+
+	LHint = LHq.astype(int)
+	HHint = HHq.astype(int)
+	HLint = HLq.astype(int)
+
+	LHlist = list(LHint)
+	HHlist = list(HHint)
+	HLlist = list(HLint)
+
+	'''Huffman pre'''
+	fullList = LLlist + LHlist + HLlist + HHList
 	
-	result = np.cumsum(LLdiff)
-	print result[0:5]
+
 
 	
 	'''the following block of code will let you look at the decomposed image. Uncomment it if you'd like
