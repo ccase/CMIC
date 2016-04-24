@@ -28,23 +28,33 @@ def main():
 	except:
 		print "Unable to open input image. Qutting."
 		quit()
-	show(im)
+	#show(im)
 	#get height and width
 	(height, width) = im.shape
 	wavelet = args.wavelet
 	q = args.quantize
 	
 	LL, (LH, HL, HH) = pywt.dwt2(im, wavelet, mode='periodization')
+
+	'''Differential encoding'''
+	flatLL = LL.flatten()
+	print flatLL[0:5]
+	flatLL = np.insert(flatLL, 0, 0.0)
+	LLdiff = np.diff(flatLL)
+	
+	result = np.cumsum(LLdiff)
+	print result[0:5]
+
 	
 	'''the following block of code will let you look at the decomposed image. Uncomment it if you'd like
-	'''
+	
 	dwt = np.zeros((height, width))
 	dwt[0:height/2, 0:width/2] = LL
 	dwt[height/2:,0:width/2] = HL
 	dwt[0:height/2, width/2:] = LH
 	dwt[height/2:,width/2:] = HH
 	show(dwt)
-	
+	'''
 
 if __name__ == '__main__':
 	main()
