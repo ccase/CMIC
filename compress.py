@@ -7,6 +7,7 @@ import numpy as np
 import PIL
 import pywt
 import argparse
+import lab3
 #wrapper for showing np.array() as an image
 def show(image):
 	scipy.misc.toimage(image).show()
@@ -17,7 +18,7 @@ def main():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("input_image")
 	parser.add_argument("output_file")
-	parser.add_argument("--wavelet", help="wavelet name to use. Default=haar", default="haar")
+	parser.add_argument("--wavelet", help="wavelet name to use. Default=haar", default="db4")
 	parser.add_argument("--quantize", help="quantization level to use. Default=4", type=int, default=4)
 	args = parser.parse_args()
 
@@ -56,20 +57,27 @@ def main():
 	HLlist = list(HLint)
 
 	'''Huffman pre'''
-	fullList = LLlist + LHlist + HLlist + HHList
-	
+	fullList = LLlist + LHlist + HLlist + HHlist
+	headerMap = {}
+	headerMap["height"] = height
+	headerMap["width"] = width
+	headerMap["wavelet"] = wavelet
+	headerMap["q"] = q
+	print headerMap
+	#lab3.fullHuffman(fullList, headerMap, args.output_file)
+
 
 
 	
 	'''the following block of code will let you look at the decomposed image. Uncomment it if you'd like
-	
+	'''
 	dwt = np.zeros((height, width))
 	dwt[0:height/2, 0:width/2] = LL
 	dwt[height/2:,0:width/2] = HL
 	dwt[0:height/2, width/2:] = LH
 	dwt[height/2:,width/2:] = HH
 	show(dwt)
-	'''
+	
 
 if __name__ == '__main__':
 	main()
