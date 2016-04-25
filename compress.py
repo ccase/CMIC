@@ -48,9 +48,9 @@ def main():
 	HHq = HH / q
 	HLq = HL / q
 
-	LHint = LHq.astype(int)
-	HHint = HHq.astype(int)
-	HLint = HLq.astype(int)
+	LHint = LHq.flatten().astype(int)
+	HHint = HHq.flatten().astype(int)
+	HLint = HLq.flatten().astype(int)
 
 	LHlist = list(LHint)
 	HHlist = list(HHint)

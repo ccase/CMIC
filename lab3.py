@@ -10,7 +10,8 @@ def calculateHistogram(lst):
 	histogram = {}
 	i = 0
 	while i < len(lst):
-		char = lst[i]
+		# keys must be a string
+		char = str(lst[i])
 		if char not in histogram:
 			histogram[char] = 1
 		else:
@@ -40,6 +41,7 @@ def huffCompress(hist):
 		lst = lst[2:]
 		lst.append([key,val])
 		lst = sorted(lst, key = lambda y: y[1])
+		print len(lst)
 	tree = lst[0][0]
 	code = []
 	huffCodeGenerator(tree, "", code)
@@ -47,7 +49,8 @@ def huffCompress(hist):
 	return dictCode
 
 def huffCodeGenerator(inputList, side, code):
-	if isinstance(inputList, int):
+	# could've been a numpy.float32 so if it's anything but a list then it's over
+	if not isinstance(inputList, list):
 		code.append((inputList, side))
 	else:
 		left = huffCodeGenerator(inputList[0], side + "0", code)
@@ -76,7 +79,8 @@ def textFileToBinary(lst, printableHist):
 	encodedFile = ""
 	i = 0
 	while i < len(lst):
-		char = lst[i]
+		# keys must be a string
+		char = str(lst[i])
 		if not char:
 			break
 		charVal = char
@@ -121,9 +125,10 @@ def fullHuffman(lst, headerMap, out):
         codeDict = huffCompress(formattedHist)
         printableHist = formatCodeDict(codeDict)
         JSONHist = JSONFormatter(printableHist)
-        sys.stdout.write(JSONHist + "\n")
+        JSONHeaderMap = JSONFormatter(headerMap)
+        #sys.stdout.write(JSONHist + "\n")
      	encodedFile = textFileToBinary(lst, printableHist)
-     	writeToNewFile(out, headerMap, JSONHist, encodedFile)
+     	writeToNewFile(out, JSONHeaderMap, JSONHist, encodedFile)
         return
     except IOError:
         print "\nError. Quitting..."
