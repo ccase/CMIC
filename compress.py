@@ -39,9 +39,9 @@ def main():
 
 	'''Differential encoding'''
 	flatLL = LL.flatten()
-	flatLL = np.insert(flatLL, 0, 0.0)
+	flatLL = np.insert(flatLL, 0, 0)
 	LLdiff = np.diff(flatLL)
-	LLlist = list(LLdiff)
+	LLlist = list(LLdiff.astype(int))
 
 	'''Quantization'''
 	LHq = LH / q
@@ -55,6 +55,7 @@ def main():
 	LHlist = list(LHint)
 	HHlist = list(HHint)
 	HLlist = list(HLint)
+
 
 	'''Huffman pre'''
 	fullList = LLlist + LHlist + HLlist + HHlist

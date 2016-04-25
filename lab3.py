@@ -133,3 +133,6 @@ def fullHuffman(lst, headerMap, out):
     except IOError:
         print "\nError. Quitting..."
         return
+
+if __name__ == '__main__':
+	fullHuffman([1,1,1,1,2,2,3,1], "t", "test.txt")
