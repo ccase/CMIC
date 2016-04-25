@@ -6,18 +6,16 @@ import operator, sys, json, hashlib, os, struct
 from heapq import merge
 from math import exp
 
-def calculateHistogram(nameOfFile):
+def calculateHistogram(lst):
 	histogram = {}
-	f = open(nameOfFile, "rb")
-	while True:
-		char = f.read(1)
-		if not char:
-			break
+	i = 0
+	while i < len(lst):
+		char = lst[i]
 		if char not in histogram:
 			histogram[char] = 1
 		else:
 			histogram[char] += 1
-	f.close()
+		i += 1
 	return histogram
 
 """
@@ -48,12 +46,12 @@ def huffCompress(hist):
 	dictCode = dict(code)
 	return dictCode
 
-def huffCodeGenerator(lst, side, code):
-	if len(lst) == 1:
-		code.append((lst, side))
+def huffCodeGenerator(inputList, side, code):
+	if isinstance(inputList, int):
+		code.append((inputList, side))
 	else:
-		left = huffCodeGenerator(lst[0], side + "0", code)
-		right = huffCodeGenerator(lst[1], side + "1", code)
+		left = huffCodeGenerator(inputList[0], side + "0", code)
+		right = huffCodeGenerator(inputList[1], side + "1", code)
 
 """
 the keys should be the char order value not the actual char itself
@@ -61,7 +59,7 @@ the keys should be the char order value not the actual char itself
 def formatCodeDict(codeDict):
 	printableHist = {}
 	for key,value in codeDict.items():
-		printableHist[ord(key)] = value
+		printableHist[key] = value
 	return printableHist
 
 """ 
@@ -74,16 +72,16 @@ def JSONFormatter(input):
 Given a textfile and the dictionary of char to binary value, 
 convert it into a sequence of binary bits
 """
-def textFileToBinary(nameOfFile, printableHist):
+def textFileToBinary(lst, printableHist):
 	encodedFile = ""
-	f = open(nameOfFile, "rb")
-	while True:
-		char = f.read(1)
+	i = 0
+	while i < len(lst):
+		char = lst[i]
 		if not char:
 			break
-		charVal = ord(char)
+		charVal = char
 		encodedFile += printableHist[charVal]
-	f.close()
+		i += 1
 	isMultipleOfEight = 8 - (len(encodedFile) % 8)
 	if isMultipleOfEight != 8:
 		for i in range(isMultipleOfEight):
@@ -103,48 +101,39 @@ def binStringToInt(binString):
 """
 Create a header for the compressed file
 """
-def writeToNewFile(nameOfFile, JSONHist, encodedFile):
-	origFile = open(nameOfFile, "rb")
-	fileText = origFile.read()
-
-	# MD5 check sum
-	m = hashlib.md5()
-	m.update(str(fileText))
-
-	# Create the hash
-	fileDict = {}
-	fileDict["size"] = os.path.getsize(nameOfFile)
-	fileDict["hash"] = m.hexdigest()
-	JSONFileDict = JSONFormatter(fileDict)
+def writeToNewFile(out, headerMap, JSONHist, encodedFile):
 
 	# Write everything to new file
-	fileName = str(nameOfFile)+ "_encodedFile"
-	f = open(fileName, "wb")
-	f.write(JSONFileDict + "\n")
+	f = open(out, "wb")
+	f.write(headerMap + "\n")
 	f.write(JSONHist + "\n")
 
 	for i in range(0,len(encodedFile), 8):
 		f.write(struct.pack("B",binStringToInt(encodedFile[i:i+8])))
 	f.close()
-	origFile.close()
 	return
 
 
-def main():
-    nameOfFile = sys.argv[1]
+def fullHuffman(lst, headerMap, out):
     try:
-    	hist = calculateHistogram(nameOfFile)
+    	hist = calculateHistogram(lst)
     	formattedHist = formatHist(hist)
         codeDict = huffCompress(formattedHist)
         printableHist = formatCodeDict(codeDict)
         JSONHist = JSONFormatter(printableHist)
         sys.stdout.write(JSONHist + "\n")
-     	encodedFile = textFileToBinary(nameOfFile, printableHist)
-     	writeToNewFile(nameOfFile, JSONHist, encodedFile)
+     	encodedFile = textFileToBinary(lst, printableHist)
+     	writeToNewFile(out, headerMap, JSONHist, encodedFile)
         return
     except IOError:
         print "\nError. Quitting..."
         return
+
+def main():
+	a = [1,2,3,4,2,4,5]
+	b = "hello"
+	c = "person.txt"
+	fullHuffman(a, b, c)
 
 # Allows the program to immediately be run when compiled.
 if __name__ == "__main__":
