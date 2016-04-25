@@ -128,13 +128,3 @@ def fullHuffman(lst, headerMap, out):
     except IOError:
         print "\nError. Quitting..."
         return
-
-def main():
-	a = [1,2,3,4,2,4,5]
-	b = "hello"
-	c = "person.txt"
-	fullHuffman(a, b, c)
-
-# Allows the program to immediately be run when compiled.
-if __name__ == "__main__":
-    main()

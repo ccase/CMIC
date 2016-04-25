@@ -64,7 +64,7 @@ def main():
 	headerMap["wavelet"] = wavelet
 	headerMap["q"] = q
 	print headerMap
-	#lab3.fullHuffman(fullList, headerMap, args.output_file)
+	lab3.fullHuffman(fullList, headerMap, args.output_file)
 
 
 
