@@ -73,6 +73,7 @@ def main():
 	im = pywt.idwt2( (LL, (LH, HL, HH)), wavelet,mode='periodization' )
 
 	'''Adjust for odd heigh or width'''
+	print im.shape
 	if height%2 != 0:
 		np.delete(im,height,0)
 	if width%2 != 0:

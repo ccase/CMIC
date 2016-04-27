@@ -38,11 +38,13 @@ def main():
 	'''Account for odd'''
 	newHeight = height
 	if height%2 != 0:
-		z = np.zeros(width,1)
+		z = np.zeros((1,width),dtype=float)
+		print z.shape
+		print im.shape
 		np.append(im, z, axis=0)
 		newHeight = height+1
 	if width%2 != 0:
-		z = np.zeros(1, newHeight)
+		z = np.zeros((newHeight, 1), dtype = float)
 		np.append(im, z, axis=1)
 
 	LL, (LH, HL, HH) = pywt.dwt2(im, wavelet, mode='periodization')
@@ -89,11 +91,11 @@ def main():
 	
 	'''the following block of code will let you look at the decomposed image. Uncomment it if you'd like
 	'''
-	dwt = np.zeros((height, width))
-	dwt[0:height/2, 0:width/2] = LL
-	dwt[height/2:,0:width/2] = HL
-	dwt[0:height/2, width/2:] = LH
-	dwt[height/2:,width/2:] = HH
+	dwt = np.zeros((newHeight, width))
+	dwt[0:newHeight/2, 0:width/2] = LL
+	dwt[newHeight/2:,0:width/2] = HL
+	dwt[0:newHeight/2, width/2:] = LH
+	dwt[newHeight/2:,width/2:] = HH
 	show(dwt)
 	
 
