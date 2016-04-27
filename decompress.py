@@ -47,6 +47,11 @@ def main():
 	decode_dict = {v.encode() : k for k, v in code_dict.iteritems()}
 	#print decode_dict
 
+	if height%2 != 0:
+		height += 1
+	if width%2 != 0:
+		width += 1
+
 	binary_data = input_file.read()
 	binary_string = ""
 	
@@ -65,6 +70,7 @@ def main():
 		binary_string = binary_string[i-1:]
 
 	print height, width
+	
 	LL = (np.cumsum(np.array(decdoed_data[0:int(height/2 * width/2)]))).reshape(height/2, width/2)
 	LH = (np.array(decdoed_data[int(height/2 * width/2):2*int(height/2 * width/2)])*q).reshape(height/2, width/2)
 	HL = (np.array(decdoed_data[2*int(height/2 * width/2):3*int(height/2 * width/2)])*q).reshape(height/2, width/2)
@@ -73,7 +79,6 @@ def main():
 	im = pywt.idwt2( (LL, (LH, HL, HH)), wavelet,mode='periodization' )
 
 	'''Adjust for odd heigh or width'''
-	print im.shape
 	if height%2 != 0:
 		np.delete(im,height,0)
 	if width%2 != 0:
@@ -81,12 +86,7 @@ def main():
 	show(im)
 	scipy.misc.toimage(im).save(output_file)
 
-	dwt = np.zeros((height, width))
-	dwt[0:height/2, 0:width/2] = LL
-	dwt[height/2:,0:width/2] = HL
-	dwt[0:height/2, width/2:] = LH
-	dwt[height/2:,width/2:] = HH
-	show(dwt)
+	
 
 
 if __name__ == '__main__':

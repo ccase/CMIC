@@ -39,14 +39,13 @@ def main():
 	newHeight = height
 	if height%2 != 0:
 		z = np.zeros((1,width),dtype=float)
-		print z.shape
-		print im.shape
-		np.append(im, z, axis=0)
+		im = np.append(im, z, axis=0)
 		newHeight = height+1
 	if width%2 != 0:
 		z = np.zeros((newHeight, 1), dtype = float)
-		np.append(im, z, axis=1)
+		im = np.append(im, z, axis=1)
 
+	print im.shape
 	LL, (LH, HL, HH) = pywt.dwt2(im, wavelet, mode='periodization')
 
 	'''Differential encoding'''
@@ -69,10 +68,6 @@ def main():
 	HHlist = list(HHint)
 	HLlist = list(HLint)
 
-	print "LL size ", len(LLlist)
-	print "LH size ", len(LHlist)
-	print "HL size ", len(HLlist)
-	print "HH size ", len(HHlist)
 
 
 
