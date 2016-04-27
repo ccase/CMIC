@@ -35,6 +35,16 @@ def main():
 	wavelet = args.wavelet
 	q = args.quantize
 	
+	'''Account for odd'''
+	newHeight = height
+	if height%2 != 0:
+		z = np.zeros(width,1)
+		np.append(im, z, axis=0)
+		newHeight = height+1
+	if width%2 != 0:
+		z = np.zeros(1, newHeight)
+		np.append(im, z, axis=1)
+
 	LL, (LH, HL, HH) = pywt.dwt2(im, wavelet, mode='periodization')
 
 	'''Differential encoding'''
