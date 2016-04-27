@@ -69,9 +69,22 @@ def main():
 	LH = (np.array(decdoed_data[int(height/2 * width/2):2*int(height/2 * width/2)])*q).reshape(height/2, width/2)
 	HL = (np.array(decdoed_data[2*int(height/2 * width/2):3*int(height/2 * width/2)])*q).reshape(height/2, width/2)
 	HH = (np.array(decdoed_data[3*int(height/2 * width/2):4*int(height/2 * width/2)])*q).reshape(height/2, width/2)
+	print "LL size ", len(LL)
+	print "LH size ", len(LH)
+	print "HL size ", len(HL)
+	print "HH size ", len(HH)
 	
 	im = pywt.idwt2( (LL, (LH, HL, HH)), wavelet,mode='periodization' )
 	show(im)
 	scipy.misc.toimage(im).save(output_file)
+
+	dwt = np.zeros((height, width))
+	dwt[0:height/2, 0:width/2] = LL
+	dwt[height/2:,0:width/2] = HL
+	dwt[0:height/2, width/2:] = LH
+	dwt[height/2:,width/2:] = HH
+	show(dwt)
+	
+
 if __name__ == '__main__':
 	main()

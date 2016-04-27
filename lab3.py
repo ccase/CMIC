@@ -41,7 +41,6 @@ def huffCompress(hist):
 		lst = lst[2:]
 		lst.append([key,val])
 		lst = sorted(lst, key = lambda y: y[1])
-		print len(lst)
 	tree = lst[0][0]
 	code = []
 	huffCodeGenerator(tree, "", code)
@@ -129,10 +128,40 @@ def fullHuffman(lst, headerMap, out):
         #sys.stdout.write(JSONHist + "\n")
      	encodedFile = textFileToBinary(lst, printableHist)
      	writeToNewFile(out, JSONHeaderMap, JSONHist, encodedFile)
-        return
+        return codeDict
     except IOError:
         print "\nError. Quitting..."
         return
 
+def decode(input_file_name, output_file_name, code_dict):
+	#quantization factor. Might change
+	input_file = open(input_file_name, 'rb')
+	decode_dict = {v.encode() : k for k, v in code_dict.iteritems()}
+	#print decode_dict
+
+	binary_data = input_file.read()
+	binary_string = ""
+	
+	for byte in binary_data:
+		binary_string += format(ord(byte),'08b')
+	
+	decdoed_data = []
+	
+	while len(decdoed_data) != 8:
+		sub_str = ""
+		i = 0
+		while sub_str not in decode_dict:
+			sub_str = binary_string[0:i]
+			i=i+1
+		decdoed_data += [int(decode_dict[sub_str])]
+		binary_string = binary_string[i-1:]
+
+	
+	print decdoed_data
+
 if __name__ == '__main__':
-	fullHuffman([1,1,1,1,2,2,3,1], "t", "test.txt")
+	codeDict = fullHuffman([1,1,1,1,2,2,3,1], "t", "test.txt")
+	decode("test.txt", "testDecoded.txt", codeDict)
+
+
+
