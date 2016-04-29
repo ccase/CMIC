@@ -20,6 +20,7 @@ def main():
 	parser.add_argument("output_file")
 	parser.add_argument("--wavelet", help="wavelet name to use. Default=haar", default="db4")
 	parser.add_argument("--quantize", help="quantization level to use. Default=4", type=int, default=4)
+	parser.add_argument("--lq", help="quantization level to use on LL. Default=2", type=int, default=2)
 	args = parser.parse_args()
 
 	input_file_name = args.input_image
@@ -34,6 +35,7 @@ def main():
 	(height, width) = im.shape
 	wavelet = args.wavelet
 	q = args.quantize
+	lq = args.lq
 	
 	'''Account for odd'''
 	newHeight = height
@@ -48,8 +50,8 @@ def main():
 	print im.shape
 	LL, (LH, HL, HH) = pywt.dwt2(im, wavelet, mode='periodization')
 
-	'''Differential encoding'''
-	flatLL = LL.flatten()
+	'''Quantize then differential encoding'''
+	flatLL = (LL/lq).flatten()
 	flatLL = np.insert(flatLL, 0, 0)
 	LLdiff = np.diff(flatLL.astype(int))
 	LLlist = list(LLdiff)
@@ -78,6 +80,7 @@ def main():
 	headerMap["width"] = width
 	headerMap["wavelet"] = wavelet
 	headerMap["q"] = q
+	headerMap["lq"] = lq
 	print headerMap
 	lab3.fullHuffman(fullList, headerMap, args.output_file)
 
@@ -85,14 +88,14 @@ def main():
 
 	
 	'''the following block of code will let you look at the decomposed image. Uncomment it if you'd like
-	'''
+	
 	dwt = np.zeros((newHeight, width))
 	dwt[0:newHeight/2, 0:width/2] = LL
 	dwt[newHeight/2:,0:width/2] = HL
 	dwt[0:newHeight/2, width/2:] = LH
 	dwt[newHeight/2:,width/2:] = HH
 	show(dwt)
-	
+	'''
 
 if __name__ == '__main__':
 	main()
